@@ -6,11 +6,16 @@ public class Test_PLayerController : MonoBehaviour
     public bool canMove = true;
     public float playerSpeed = 5f;
     public float grafityScale = 2f;
+
+    public float sensitivity = 200f;
+
+    private float xRotation = 0f;private float yRotation = 0f;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         canMove = true; 
+Cursor.lockState = CursorLockMode.Locked;
     }
 
     // Update is called once per frame
@@ -20,13 +25,29 @@ public class Test_PLayerController : MonoBehaviour
         {
             PlayerMove();
         }
+
+        rotationMouse();
     }
 
     void PlayerMove()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
-        rb.linearVelocity = new Vector3(x * playerSpeed, 0, z*playerSpeed);
+        Vector3 move = (transform.right * x + transform.forward * z).normalized;
+
+        rb.linearVelocity = new Vector3(
+            move.x * playerSpeed,
+            rb.linearVelocity.y,   
+            move.z * playerSpeed
+        );
+        if ( Input.GetKey(KeyCode.LeftShift))
+        {
+            playerSpeed = 5f;
+        }
+        else
+        {
+            playerSpeed = 2.5f;
+        }
         PlayerJump();   
     }
     void PlayerJump() 
@@ -35,5 +56,20 @@ public class Test_PLayerController : MonoBehaviour
         {
             rb.AddForce(Vector3.up * grafityScale,ForceMode.Impulse);
         }
+    }
+
+    void rotationMouse()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+
+        
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+yRotation += mouseX;
+         transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+
+        
+         // transform.Rotate(Vector3.up * mouseX);
     }
 }
