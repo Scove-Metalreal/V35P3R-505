@@ -117,7 +117,7 @@ Cursor.lockState = CursorLockMode.Locked;
         Quaternion lookRot = Quaternion.Euler(xRotation, yRotation, 0f);
 
         
-        Quaternion gravityRot = Quaternion.Euler(0f, 0f, playerGrafity.currentZRotation);
+        Quaternion gravityRot = Quaternion.Euler( playerGrafity.currentXRotation, 0f, playerGrafity.currentZRotation);
 
         
         transform.rotation = gravityRot * lookRot;

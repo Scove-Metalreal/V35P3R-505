@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class C_PlayerGrafity : MonoBehaviour
 {
@@ -7,17 +8,22 @@ public class C_PlayerGrafity : MonoBehaviour
         Up,
         Down,
         Left,
-        Right
+        Right,
+        Forward,
+        Backward
     }
 
     public bool GrafityDown = true;
     public bool GrafityUp = false;
     public bool GrafityLeft = false;
     public bool GrafityRight = false;
-
+public bool GrafityForward = false;
+public bool GrafityBackward = false;
+    
     public bool isGround = true;
     private bool isChangingGravity = false;
     public float currentZRotation = 0f;
+    public float currentXRotation = 0f;
     private Rigidbody rb;
 
     void Start()
@@ -29,21 +35,26 @@ public class C_PlayerGrafity : MonoBehaviour
     void Update()
     {
         // Đổi trọng lực bằng Ctrl + WASD
-        if (Input.GetKey(KeyCode.LeftControl))
+        if (Keyboard.current.leftCtrlKey.isPressed)   
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            if (Keyboard.current.wKey.wasPressedThisFrame)
                 ApplyGravityDirection(GravityDirection.Up);
 
-            if (Input.GetKeyDown(KeyCode.S))
+            if (Keyboard.current.sKey.wasPressedThisFrame)
                 ApplyGravityDirection(GravityDirection.Down);
 
-            if (Input.GetKeyDown(KeyCode.A))
+            if (Keyboard.current.aKey.wasPressedThisFrame)
                 ApplyGravityDirection(GravityDirection.Left);
 
-            if (Input.GetKeyDown(KeyCode.D))
+            if (Keyboard.current.dKey.wasPressedThisFrame)
                 ApplyGravityDirection(GravityDirection.Right);
-        }
 
+            if (Keyboard.current.eKey.wasPressedThisFrame)
+                ApplyGravityDirection(GravityDirection.Forward);
+
+            if (Keyboard.current.qKey.wasPressedThisFrame)
+                ApplyGravityDirection(GravityDirection.Backward);
+        }
         if (isChangingGravity)
         {
             if (isGround)
@@ -69,29 +80,45 @@ public class C_PlayerGrafity : MonoBehaviour
     {
         switch (direction)
         {
+            case GravityDirection.Forward:
+                Physics.gravity = Vector3.forward * 9.81f;
+                currentZRotation = 0f;
+                currentXRotation = -90f;
+                GrafityForward = true; GrafityDown = GrafityLeft = GrafityRight = GrafityBackward= GrafityUp = false;
+                break;
+            case GravityDirection.Backward:
+                Physics.gravity = Vector3.back * 9.81f;
+                currentZRotation = 0f;
+                currentXRotation = 90f;
+                GrafityBackward = true; GrafityDown = GrafityLeft = GrafityRight = GrafityForward= GrafityUp = false;
+                break;
             case GravityDirection.Up:
                 Physics.gravity = Vector3.up * 9.81f;
                 currentZRotation = 180f;
-                GrafityUp = true; GrafityDown = GrafityLeft = GrafityRight = false;
+                currentXRotation = 0f;
+                GrafityUp = true; GrafityDown = GrafityLeft = GrafityRight = GrafityForward = GrafityBackward = false;
                 break;
 
             case GravityDirection.Left:
                 Physics.gravity = Vector3.left * 9.81f;
                 currentZRotation = -90f;
-                GrafityLeft = true; GrafityDown = GrafityUp = GrafityRight = false;
+                currentXRotation = 0f;
+                GrafityLeft = true; GrafityDown = GrafityUp = GrafityRight= GrafityForward = GrafityBackward = false;
                 break;
 
             case GravityDirection.Right:
                 Physics.gravity = Vector3.right * 9.81f;
                 currentZRotation = 90f;
-                GrafityRight = true; GrafityDown = GrafityUp = GrafityLeft = false;
+                currentXRotation = 0f;
+                GrafityRight = true; GrafityDown = GrafityUp = GrafityLeft= GrafityForward = GrafityBackward = false;
                 break;
 
             case GravityDirection.Down:
             default:
                 Physics.gravity = Vector3.down * 9.81f;
                 currentZRotation = 0f;
-                GrafityDown = true; GrafityUp = GrafityLeft = GrafityRight = false;
+                currentXRotation = 0f;
+                GrafityDown = true; GrafityUp = GrafityLeft = GrafityRight= GrafityForward = GrafityBackward = false;
                 break;
         }
 
