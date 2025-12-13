@@ -1,0 +1,1 @@
+Texture gốc (.png, .tga). Prefix: Tex_
