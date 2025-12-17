@@ -9,17 +9,16 @@ public class C_PlayerGrafity : NetworkBehaviour
         Down, Up, Left, Right, Forward, Backward
     }
 
-    // Gravity riêng từng player
     public NetworkVariable<Vector3> Gravity =
         new NetworkVariable<Vector3>(Vector3.down,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner);
+            NetworkVariableWritePermission.Server);
 
-    // Rotation xoay theo gravity
     public NetworkVariable<Vector2> GravityRotation =
         new NetworkVariable<Vector2>(Vector2.zero,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner);
+            NetworkVariableWritePermission.Server);
+
 
     public Vector3 CurrentGravity => Gravity.Value;
     public float currentXRotation => GravityRotation.Value.x;
