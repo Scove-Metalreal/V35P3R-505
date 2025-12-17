@@ -26,7 +26,15 @@ public class C_PlayerController : NetworkBehaviour
 
 <<<<<<< Updated upstream
         // Input setup
-        playerInput = new PlayerInput();
+        playerInput = new  PlayerInput();
+        
+    }
+
+    public override void OnNetworkSpawn()
+    {
+        
+
+        Cursor.lockState = CursorLockMode.Locked;
         playerInput.Player.Move.performed += ctx =>
         {
             if (IsOwner) moveInput = ctx.ReadValue<Vector2>();
@@ -35,21 +43,26 @@ public class C_PlayerController : NetworkBehaviour
         {
             if (IsOwner) moveInput = Vector2.zero;
         };
-    }
-
-    public override void OnNetworkSpawn()
-    {
         if (!IsOwner)
         {
-            playerInput.Disable();
+            // Tắt input với player không sở hữu
+            if (playerInput != null)
+                playerInput.Disable();
+
             enabled = false;
             return;
         }
 
+<<<<<<< Updated upstream
         playerInput.Enable();
         Cursor.lockState = CursorLockMode.Locked;
 =======
         playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();   // LẤY TỪ PREFAB – ĐÚNG
+=======
+        // Bật input cho owner
+        if (playerInput != null)
+            playerInput.Enable();
+>>>>>>> Stashed changes
     }
 
     public override void OnNetworkSpawn()
