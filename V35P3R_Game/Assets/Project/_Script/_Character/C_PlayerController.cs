@@ -2,26 +2,29 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class C_PLayerController : NetworkBehaviour
+public class C_PlayerController : NetworkBehaviour
 {
     private C_PlayerGrafity playerGrafity;
     private Rigidbody rb;
     private M_PlayerStats playerStat;
 
-    public bool canMove = true;
     public float sensitivity = 200f;
+    bool canMove = true;
 
-    private float xRotation = 0f;
-    private float yRotation = 0f;
+    float xRotation;
+    float yRotation;
 
-    PlayerInput playerInput;
     Vector2 moveInput;
+
+    UnityEngine.InputSystem.PlayerInput playerInput;
 
     private void Awake()
     {
-        playerStat = GetComponent<M_PlayerStats>();
         playerGrafity = GetComponent<C_PlayerGrafity>();
+        playerStat = GetComponent<M_PlayerStats>();
+        rb = GetComponent<Rigidbody>();
 
+<<<<<<< Updated upstream
         // Input setup
         playerInput = new PlayerInput();
         playerInput.Player.Move.performed += ctx =>
@@ -45,57 +48,61 @@ public class C_PLayerController : NetworkBehaviour
 
         playerInput.Enable();
         Cursor.lockState = CursorLockMode.Locked;
+=======
+        playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();   // LẤY TỪ PREFAB – ĐÚNG
     }
 
-    void Start()
+    public override void OnNetworkSpawn()
     {
-        rb = GetComponent<Rigidbody>();
-        canMove = true;
+        if (IsOwner)
+        {
+            playerInput.enabled = true;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else
+        {
+            playerInput.enabled = false;
+        }
+>>>>>>> Stashed changes
+    }
+
+    // GỌI TỪ PlayerInput → Move event
+    public void OnMove(InputValue value)
+    {
+        if (!IsOwner) return;
+        moveInput = value.Get<Vector2>();
     }
 
     void Update()
     {
         if (!IsOwner) return;
-        RotationMouse();
+        HandleLook();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (!IsOwner) return;
-        if (canMove) PlayerMove();
+        HandleMove();
     }
 
-    void PlayerMove()
+    void HandleMove()
     {
-        // Gravity riêng
         Vector3 gravityDir = playerGrafity.CurrentGravity.normalized;
         Vector3 up = -gravityDir;
 
-        // Hướng di chuyển theo gravity cá nhân
         Vector3 forward = Vector3.ProjectOnPlane(transform.forward, up).normalized;
         Vector3 right = Vector3.ProjectOnPlane(transform.right, up).normalized;
 
         Vector3 move = forward * moveInput.y + right * moveInput.x;
 
         float speed = Keyboard.current.leftShiftKey.isPressed ?
-                      playerStat.RunSpeed.Value :
-                      playerStat.WalkSpeed.Value;
+            playerStat.RunSpeed.Value :
+            playerStat.WalkSpeed.Value;
 
         rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
-
-        PlayerJump();
     }
 
-    void PlayerJump()
-    {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            Vector3 jumpDir = -playerGrafity.CurrentGravity.normalized;
-            rb.AddForce(jumpDir * playerStat.JumpForce.Value, ForceMode.Impulse);
-        }
-    }
-
-    void RotationMouse()
+    void HandleLook()
     {
         float mouseX = Mouse.current.delta.x.ReadValue() * sensitivity * Time.deltaTime;
         float mouseY = Mouse.current.delta.y.ReadValue() * sensitivity * Time.deltaTime;
@@ -104,8 +111,8 @@ public class C_PLayerController : NetworkBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
-        Quaternion lookRot = Quaternion.Euler(xRotation, yRotation, 0f);
-        Quaternion gravityRot = Quaternion.Euler(playerGrafity.currentXRotation, 0f, playerGrafity.currentZRotation);
+        Quaternion lookRot = Quaternion.Euler(xRotation, yRotation, 0);
+        Quaternion gravityRot = Quaternion.Euler(playerGrafity.currentXRotation, 0, playerGrafity.currentZRotation);
 
         transform.rotation = gravityRot * lookRot;
     }
