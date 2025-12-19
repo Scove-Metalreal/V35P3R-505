@@ -1,0 +1,1 @@
+File .fbx môi trường (Tường, sàn, cột).

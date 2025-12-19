@@ -1,0 +1,1 @@
+MANAGER (Mgr_): Quản lý toàn cục (GameLoop, NetworkRunner).

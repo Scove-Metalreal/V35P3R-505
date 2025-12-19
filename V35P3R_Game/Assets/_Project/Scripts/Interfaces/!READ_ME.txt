@@ -1,0 +1,1 @@
+INTERFACE (I): Các bản thiết kế chung (IInteractable, IDamageable).

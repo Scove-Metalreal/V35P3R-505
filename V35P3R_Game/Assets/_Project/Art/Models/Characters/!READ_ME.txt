@@ -1,0 +1,1 @@
+File .fbx nhân vật. Nhớ set Rig thành Humanoid.
