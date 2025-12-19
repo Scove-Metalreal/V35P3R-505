@@ -77,7 +77,7 @@ public class _PLayerController : MonoBehaviour
         rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
         PlayerJump();   
     }
-    void PlayerJump() 
+    void PlayerJump()   
     {
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
