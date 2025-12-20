@@ -40,8 +40,15 @@ namespace Editor
 
         private static void OnPlayModeChanged(PlayModeStateChange state)
         {
-            if (!IsEnabled) return;
             if (state != PlayModeStateChange.ExitingEditMode) return;
+
+            if (!IsEnabled)
+            {
+                // FIX: Nếu tắt Smart Boot, phải reset lại biến này về null 
+                // để Unity chạy scene đang mở thay vì scene Boot đã set trước đó.
+                EditorSceneManager.playModeStartScene = null;
+                return;
+            }
 
             // Nếu Scene hiện tại đã là Boot rồi thì thôi
             string currentScene = EditorSceneManager.GetActiveScene().path;
