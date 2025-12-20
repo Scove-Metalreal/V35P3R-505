@@ -7,6 +7,7 @@ public class C_NPCMoving : MonoBehaviour
     public Transform playerTarget;
     void Start()
     {
+        agent = GetComponent<NavMeshAgent>();
         playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
     }
 

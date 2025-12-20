@@ -98,11 +98,11 @@ public class _PLayerController : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
 
         Quaternion lookRot = Quaternion.Euler(xRotation, yRotation, 0f);
-        Quaternion lookRotx = Quaternion.Euler(xRotation, 0f, 0f);
+        Quaternion lookRoty = Quaternion.Euler(0f, yRotation, 0f);
         Quaternion gravityRot = Quaternion.Euler(playerGrafity.currentXRotation, 0f, playerGrafity.currentZRotation);
         transform.rotation = gravityRot;
         head.localRotation =   lookRot;
-        body.localRotation = lookRotx;
+        body.localRotation = lookRoty;
         
     }
 }
