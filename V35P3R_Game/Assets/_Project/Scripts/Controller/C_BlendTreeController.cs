@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TwoDimentionalBlend : MonoBehaviour
+public class C_BlendTreeController : MonoBehaviour
 {
     Animator anim;
     float velocityZ = 0.0f;
