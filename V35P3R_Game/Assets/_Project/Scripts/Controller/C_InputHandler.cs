@@ -3,7 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class _PLayerController : MonoBehaviour
+public class C_InputHandler : MonoBehaviour
 {
     private _GrafityPlayer playerGrafity;
     private Rigidbody rb;
@@ -59,6 +59,29 @@ public class _PLayerController : MonoBehaviour
         }
 
     }
+
+    //TODO: add logic returning movement input correspond to player input
+    public Vector2 GetMoveInput()
+    {
+        return moveInput;
+    }
+
+    public bool IsJumpPressed()
+    {
+        return true;
+    }
+
+    public bool IsInteractPressed()
+    {
+        return true;
+    }
+
+    public bool IsAbilityPressed()
+    {
+        return true;
+    }
+    
+    
 
     void PlayerMove()
     {
