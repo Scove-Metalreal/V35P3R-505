@@ -13,7 +13,7 @@ public class C_InputHandler : MonoBehaviour
     public float runSpeed = 5f;
     public float walkSpeed = 2.5f;
     [Header("Mouselook")]
-    public float sensitivity = 200f;
+    public float sensitivity = 2.5f;
     
     private float xRotation = 0f;private float yRotation = 0f;
     [Header("Movement")]
@@ -118,7 +118,7 @@ public class C_InputHandler : MonoBehaviour
 
         yRotation += mouseX;
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+        xRotation = Mathf.Clamp(xRotation, -30f, 10f);
 
         Quaternion lookRot = Quaternion.Euler(xRotation, yRotation, 0f);
         Quaternion lookRoty = Quaternion.Euler(0f, yRotation, 0f);
