@@ -1,8 +1,9 @@
 using UnityEngine;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 public class C_BlendTreeController : MonoBehaviour
 {
-    Animator anim;
+    public Animator anim;
     float velocityZ = 0.0f;
     float velocityX = 0.0f;
     public float acceleration = 0.5f;
@@ -10,11 +11,15 @@ public class C_BlendTreeController : MonoBehaviour
     public float maximumWalkVelocity = 0.5f;
     public float maximumRunVelocity = 2.0f;
 
+    int VelocityZHash;
+    int VelocityXHash;
+
     public C_PlayerInput input;
     Vector2 currentMovement;
     bool movementPressed;
     bool runPressed;
-    void Awake()
+    bool crouchPressed;
+    public virtual void Awake()
     {
         input = new C_PlayerInput();
 
@@ -31,22 +36,35 @@ public class C_BlendTreeController : MonoBehaviour
         };
         input.Player.Sprint.performed += ctx => runPressed = true;
         input.Player.Sprint.canceled += ctx => runPressed = false;
+        input.Player.Crouch.performed += ctx => crouchPressed = true;
+        input.Player.Crouch.canceled += ctx => crouchPressed = false;
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public virtual void Start()
     {
         anim = GetComponent<Animator>();
+        VelocityZHash = Animator.StringToHash("Velocity Z");
+        VelocityXHash = Animator.StringToHash("Velocity X");
     }
 
     // Update is called once per frame
     void Update()
     {
+        changeVelocity();
+        if (crouchPressed)
+        {
+            anim.SetBool("isCrouch", true);
+        }
+        else
+        {
+            anim.SetBool("isCrouch", false);
+        }
+    }
+
+    private void changeVelocity()
+    {
         float currentMaxVelocity = runPressed ? maximumRunVelocity : maximumWalkVelocity;
 
-        if (currentMovement.y > 0 && velocityZ < currentMaxVelocity)
-        {
-            velocityZ += Time.deltaTime * acceleration;
-        }
         if (currentMovement.y > 0 && velocityZ < currentMaxVelocity)
         {
             velocityZ += Time.deltaTime * acceleration;
@@ -58,7 +76,6 @@ public class C_BlendTreeController : MonoBehaviour
 
         velocityZ = Mathf.Clamp(velocityZ, 0f, currentMaxVelocity);
 
-        // ===== X (Left / Right) =====
         if (Mathf.Abs(currentMovement.x) > 0.01f)
         {
             velocityX += currentMovement.x * Time.deltaTime * acceleration;
@@ -77,10 +94,11 @@ public class C_BlendTreeController : MonoBehaviour
             -currentMaxVelocity,
             currentMaxVelocity
         );
-        
-        anim.SetFloat("Velocity Z", velocityZ);
-        anim.SetFloat("Velocity X", velocityX);
+
+        anim.SetFloat(VelocityZHash, velocityZ);
+        anim.SetFloat(VelocityXHash, velocityX);
     }
+
     void OnEnable()
     {
         input.Enable();

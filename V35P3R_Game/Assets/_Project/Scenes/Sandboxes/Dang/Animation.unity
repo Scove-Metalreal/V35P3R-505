@@ -608,10 +608,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 943bf5b2dd072af40a2872f3c9f5418d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::C_BlendTreeController
+  anim: {fileID: 1964038419}
   acceleration: 0.5
   deceleration: 1
   maximumWalkVelocity: 0.5
   maximumRunVelocity: 2
+--- !u!95 &1964038419 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: 3ffd6d9c66bc22a4fa1a4a218eca66ae, type: 3}
+  m_PrefabInstance: {fileID: 1544076438}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
