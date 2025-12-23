@@ -15,5 +15,5 @@ EditorBuildSettings:
     path: Assets/_Project/Scenes/Sandboxes/Duy/TEST_1.unity
     guid: 2aafddf4cb309d8448c979abd3443977
   m_configObjects:
-    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 48bd130c3dc8e5d4287a2a63d800607f, type: 3}
   m_UseUCBPForAssetBundles: 0
