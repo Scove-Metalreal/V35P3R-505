@@ -1,6 +1,8 @@
-﻿namespace _Project.Scripts.View
+﻿using UnityEngine;
+
+namespace _Project.Scripts.View
 {
-    public class V_PlayerVisual
+    public class V_PlayerVisual:MonoBehaviour 
     {
         public void SetAnimationSpeed(float speed)
         {
