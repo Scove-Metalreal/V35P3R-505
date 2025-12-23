@@ -1,6 +1,6 @@
 using _Project.Scripts.Controller;
 using _Project.Scripts.Interfaces;
-using _Project.Scripts.Managers;
+// using _Project.Scripts.Managers;
 using _Project.Scripts.View;
 using UnityEngine;
 
@@ -31,7 +31,7 @@ namespace _Project.Scripts.Model
         private Rigidbody _rb;
         private C_GravityLogic.GravityDirection _currentGravityDir = C_GravityLogic.GravityDirection.Down;
         // Biến lưu trữ vật đang cầm trên tay
-        private Item_Scrap _heldItem = null;
+        // private Item_Scrap _heldItem = null;
     
         // Biến lưu vật đang nhìn thấy (để hiện UI)
         private IInteractable _currentTarget = null; 
@@ -191,7 +191,7 @@ namespace _Project.Scripts.Model
             if (_inputHandler.IsInteractPressed() && _currentTarget != null)
             {
                 // Nếu tay đang rảnh thì mới nhặt
-                if (_heldItem == null)
+                // if (_heldItem == null)
                 {
                     _currentTarget.OnInteract(this);
                 }
@@ -225,32 +225,32 @@ namespace _Project.Scripts.Model
             _headTransform.localRotation = headRot;
         }
         
-        public void PickupItem(Item_Scrap item)
-        {
-            if (_heldItem != null) return; // Đang cầm rồi thì thôi
-
-            _heldItem = item;
-        
-            // Gọi Logic để gắn vật vào tay (Visual & Physics)
-            _interactLogic.AttachItemToHand(item.transform, _holdPosition);
-        
-            // Logic game: Có thể giảm tốc độ di chuyển vì nặng
-            // _moveLogic.SetWeightPenalty(item.GetWeight()); (Nếu có tính năng này)
-        
-            Debug.Log($"Picked up: {item.name}");
-        }
-
-        public void DropItem()
-        {
-            if (_heldItem == null) return;
-
-            // Gọi Logic để tách vật ra (Visual & Physics)
-            // Ném về phía trước Camera một chút
-            _interactLogic.DetachItem(_heldItem.transform, _headTransform.forward * 5f);
-        
-            _heldItem = null;
-            Debug.Log("Dropped item");
-        }
+        // public void PickupItem(Item_Scrap item)
+        // {
+        //     if (_heldItem != null) return; // Đang cầm rồi thì thôi
+        //
+        //     _heldItem = item;
+        //
+        //     // Gọi Logic để gắn vật vào tay (Visual & Physics)
+        //     _interactLogic.AttachItemToHand(item.transform, _holdPosition);
+        //
+        //     // Logic game: Có thể giảm tốc độ di chuyển vì nặng
+        //     // _moveLogic.SetWeightPenalty(item.GetWeight()); (Nếu có tính năng này)
+        //
+        //     Debug.Log($"Picked up: {item.name}");
+        // }
+        //
+        // public void DropItem()
+        // {
+        //     if (_heldItem == null) return;
+        //
+        //     // Gọi Logic để tách vật ra (Visual & Physics)
+        //     // Ném về phía trước Camera một chút
+        //     _interactLogic.DetachItem(_heldItem.transform, _headTransform.forward * 5f);
+        //
+        //     _heldItem = null;
+        //     Debug.Log("Dropped item");
+        // }
         
         private void HandleSurvivalStats()
         {
