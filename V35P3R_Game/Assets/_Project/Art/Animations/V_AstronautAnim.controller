@@ -22,10 +22,10 @@ AnimatorState:
   m_TimeParameterActive: 0
   m_Motion: {fileID: -1245277073728029783}
   m_Tag: 
-  m_SpeedParameter: Velocity X
+  m_SpeedParameter: VelocityX
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
-  m_TimeParameter: Velocity X
+  m_TimeParameter: VelocityX
 --- !u!206 &-6318455400461445851
 BlendTree:
   m_ObjectHideFlags: 1
@@ -105,8 +105,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Velocity X
     m_Mirror: 0
-  m_BlendParameter: Velocity X
-  m_BlendParameterY: Velocity Z
+  m_BlendParameter: VelocityX
+  m_BlendParameterY: VelocityZ
   m_MinThreshold: 0
   m_MaxThreshold: 0.85714287
   m_UseAutomaticThresholds: 1
@@ -176,8 +176,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Velocity X
     m_Mirror: 0
-  m_BlendParameter: Velocity X
-  m_BlendParameterY: Velocity Z
+  m_BlendParameter: VelocityX
+  m_BlendParameterY: VelocityZ
   m_MinThreshold: 0
   m_MaxThreshold: 1
   m_UseAutomaticThresholds: 1
@@ -204,13 +204,19 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Velocity X
+  - m_Name: isCrouch
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
+  - m_Name: VelocityX
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: Velocity Z
+  - m_Name: VelocityZ
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
