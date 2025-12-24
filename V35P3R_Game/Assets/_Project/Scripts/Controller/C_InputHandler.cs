@@ -1,131 +1,78 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class C_InputHandler : MonoBehaviour
+// Bắt buộc
+
+namespace _Project.Scripts.Controller
 {
-    private _GrafityPlayer playerGrafity;
-    private Rigidbody rb;
-    public bool canMove = true;
-    public float playerSpeed = 5f;
-    public float jumpForce = 2f;
-    public float runSpeed = 5f;
-    public float walkSpeed = 2.5f;
-    [Header("Mouselook")]
-    public float sensitivity = 200f;
-    
-    private float xRotation = 0f;private float yRotation = 0f;
-    [Header("Movement")]
-    UnityEngine.InputSystem.PlayerInput playerInput;
-    private InputAction moveAction;
-    
-    private Vector2 moveInput;
-    [SerializeField] private Transform head;
-    [SerializeField] private Transform body;
+    public class C_InputHandler : MonoBehaviour
+    {
+        // --- DATA STORAGE ---
+        // Nơi lưu trữ dữ liệu để M_Player lấy dùng
+        private Vector2 _moveInput;
+        private Vector2 _mouseDelta;
+        private bool _jumpInput;
+        private bool _runInput;
+        private bool _interactInput;
+        private bool _abilityInput;
+        private bool _crouchInput;
 
-    private void Awake()
-    {
-        playerGrafity = GetComponent<_GrafityPlayer>();
-        //Movement
-        playerInput = GetComponent<UnityEngine.InputSystem.PlayerInput>();
-    }
-    
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        rb = GetComponent<Rigidbody>();
-        canMove = true; 
-        Cursor.lockState = CursorLockMode.Locked;
-    }
-    public void OnMove(InputValue value)
-    {
-        
-        moveInput = value.Get<Vector2>();
-        
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
-        RotationMouse();
-    }
+        // --- GETTERS (M_Player sẽ gọi mấy hàm này) ---
+        public Vector2 GetMoveInput() => _moveInput;
+        public Vector2 GetMouseDelta() => _mouseDelta;
+        public bool IsJumpPressed() => _jumpInput;
+        public bool IsRunPressed() => _runInput;
+        public bool IsInteractPressed() => _interactInput;
+        public bool IsAbilityPressed() => _abilityInput;
+        public bool IsCrouchPressed() => _crouchInput;
 
-    private void FixedUpdate()
-    {
-        if (canMove)
+        // =========================================================
+        // CÁC HÀM NHẬN TÍN HIỆU TỪ PLAYER INPUT COMPONENT
+        // (Tên hàm bắt buộc phải là On + Tên Action)
+        // Ví dụ: Action "Move" -> Hàm "OnMove"
+        // =========================================================
+
+        // 1. Di chuyển (WASD)
+        public void OnMove(InputValue value)
         {
-            PlayerMove();
+            _moveInput = value.Get<Vector2>();
+            // Debug.Log($"Input Move: {_moveInput}"); // Bật dòng này nếu cần test
         }
 
-    }
-
-    //TODO: add logic returning movement input correspond to player input
-    public Vector2 GetMoveInput()
-    {
-        return moveInput;
-    }
-
-    public bool IsJumpPressed()
-    {
-        return true;
-    }
-
-    public bool IsInteractPressed()
-    {
-        return true;
-    }
-
-    public bool IsAbilityPressed()
-    {
-        return true;
-    }
-    
-    
-
-    void PlayerMove()
-    {
-        Vector3 gravityDir = playerGrafity.CurrentGravity.normalized;
-        Vector3 up = -gravityDir;
-
-        Vector3 forward = Vector3.ProjectOnPlane(head.transform.forward, up).normalized;
-        Vector3 right = Vector3.ProjectOnPlane(head.transform.right, up).normalized;
-
-        Vector3 move = forward * moveInput.y + right * moveInput.x;
-
-        float speed = Keyboard.current.leftShiftKey.isPressed ?
-            runSpeed :
-            walkSpeed;
-
-        rb.MovePosition(rb.position + move * speed * Time.fixedDeltaTime);
-        PlayerJump();   
-    }
-    void PlayerJump()   
-    {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        // 2. Nhìn chuột (Mouse Delta)
+        public void OnLook(InputValue value)
         {
-            Vector3 jumpDir = -playerGrafity.CurrentGravity.normalized;
-            rb.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
-
+            _mouseDelta = value.Get<Vector2>();
         }
-    }
 
-    void RotationMouse()
-    {
-         
-        float mouseX = Mouse.current.delta.x.ReadValue() * sensitivity * Time.deltaTime;
-        float mouseY = Mouse.current.delta.y.ReadValue() * sensitivity * Time.deltaTime;
+        // 3. Nhảy (Space)
+        public void OnJump(InputValue value)
+        {
+            _jumpInput = value.isPressed;
+        }
 
-        yRotation += mouseX;
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -80f, 80f);
+        // 4. Chạy (Shift)
+        public void OnRun(InputValue value)
+        {
+            _runInput = value.isPressed;
+        }
 
-        Quaternion lookRot = Quaternion.Euler(xRotation, yRotation, 0f);
-        Quaternion lookRoty = Quaternion.Euler(0f, yRotation, 0f);
-        Quaternion gravityRot = Quaternion.Euler(playerGrafity.currentXRotation, 0f, playerGrafity.currentZRotation);
-        transform.rotation = gravityRot;
-        head.localRotation =   lookRot;
-        body.localRotation = lookRoty;
-        
+        // 5. Tương tác (E)
+        public void OnInteract(InputValue value)
+        {
+            _interactInput = value.isPressed;
+        }
+
+        // 6. Kỹ năng (Q)
+        public void OnAbility(InputValue value)
+        {
+            _abilityInput = value.isPressed;
+        }
+
+        // 7. Ngồi (C hoặc Ctrl)
+        public void OnCrouch(InputValue value)
+        {
+            _crouchInput = value.isPressed;
+        }
     }
 }

@@ -53,5 +53,13 @@ namespace Editor
                 t.localScale = storedScale.Value;
             }
         }
+
+        [MenuItem("CONTEXT/Transform/Reset Position To Zero")]
+        static void ResetPosition(MenuCommand command)
+        {
+            Transform t = (Transform)command.context;
+            Undo.RecordObject(t, "Reset Position");
+            t.localPosition = Vector3.zero;
+        }
     }
 }

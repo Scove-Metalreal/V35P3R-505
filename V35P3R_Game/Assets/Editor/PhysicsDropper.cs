@@ -17,7 +17,7 @@ namespace Editor
             // This happens instantly to the user
             int maxIterations = 500;
         
-            Physics.autoSimulation = false; // Stop normal physics
+            Physics.simulationMode = SimulationMode.Script; // Stop normal physics
 
             for (int i = 0; i < maxIterations; i++)
             {
@@ -27,7 +27,7 @@ namespace Editor
                 // But usually 500 frames is fast enough to just run fully.
             }
 
-            Physics.autoSimulation = true; // Restore physics
+            Physics.simulationMode = SimulationMode.FixedUpdate; // Restore physics
             Debug.Log("Physics Drop Complete.");
         }
     }
