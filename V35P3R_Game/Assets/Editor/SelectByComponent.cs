@@ -27,7 +27,7 @@ namespace Editor
                 if (type == null) return;
 
                 // Find all objects
-                var foundComponents = FindObjectsOfType(type) as Component[];
+                var foundComponents = FindObjectsByType(type, FindObjectsSortMode.None) as Component[];
                 GameObject[] gameObjects = foundComponents.Select(c => c.gameObject).ToArray();
 
                 Selection.objects = gameObjects;

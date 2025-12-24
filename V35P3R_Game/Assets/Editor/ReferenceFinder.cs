@@ -6,7 +6,7 @@ namespace Editor
 {
     public class ReferenceFinder
     {
-        [MenuItem("Assets/Find References In Project", false, 20)]
+        [MenuItem("Assets/Find References (Custom)", false, 20)]
         private static void FindRefs()
         {
             Object selected = Selection.activeObject;
