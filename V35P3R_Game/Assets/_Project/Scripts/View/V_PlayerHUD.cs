@@ -15,6 +15,9 @@ namespace _Project.Scripts.View
 
         [Header("--- TEXT ---")]
         [SerializeField] private TextMeshProUGUI _interactionText; // Dòng chữ "Press E to pick up"
+        
+        [Header("--- GAME OBJECTIVE ---")]
+        [SerializeField] private Slider _progressSlider; // Tạo thêm 1 
 
         // Hàm cập nhật thanh Máu (Nhận vào 0 -> 1)
         public void UpdateHealth(float current, float max)
@@ -48,6 +51,11 @@ namespace _Project.Scripts.View
         public void ShowDamageEffect(bool isCritical)
         {
             // Code đổi màu panel đỏ ở đây (nếu có)
+        }
+        
+        public void UpdateStationProgress(float percent)
+        {
+            if (_progressSlider != null) _progressSlider.value = percent;
         }
     }
 }

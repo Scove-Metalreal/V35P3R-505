@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using _Project.Scripts.Controller;
 using _Project.Scripts.Interfaces;
+using _Project.Scripts.Managers;
 // using _Project.Scripts.Managers;
 using _Project.Scripts.View;
 using UnityEngine;
@@ -15,6 +16,7 @@ namespace _Project.Scripts.Model
         [SerializeField] private C_GravityLogic _gravityLogic;
         [SerializeField] private C_MovementLogic _moveLogic;
         [SerializeField] private C_InventoryLogic _inventoryLogic;
+        [SerializeField] private C_PlayerAudio _audioLogic;
 
         [Header("--- VISUALS ---")]
         [SerializeField] private Transform _headTransform; // Gắn object Camera vào đây
@@ -56,6 +58,12 @@ namespace _Project.Scripts.Model
             
             if (_inputHandler == null) _inputHandler = GetComponent<C_InputHandler>();
             if (_headTransform == null) _headTransform = GetComponentInChildren<Camera>().transform;
+            if (_audioLogic == null) _audioLogic = GetComponentInChildren<C_PlayerAudio>();
+        
+            if (_audioLogic != null)
+            {
+                _audioLogic.Setup(transform);
+            }
         }
 
         private void Start()
@@ -90,6 +98,7 @@ namespace _Project.Scripts.Model
             HandleCameraLook();
             HandleSurvivalStats();
             HandleInventoryInput();
+            HandleAudio();
 
             // 3. Visual Animation
             if (_visual != null)
@@ -251,6 +260,31 @@ namespace _Project.Scripts.Model
             }
         }
         
+        // 1. Trả về món đồ đang cầm trên tay (để Trạm kiểm tra)
+        public Item_Scrap GetCurrentHeldItem()
+        {
+            if (_inventory.Count == 0) return null;
+            if (_currentSlotIndex >= _inventory.Count) return null;
+
+            return _inventory[_currentSlotIndex];
+        }
+        
+        // 2. Xóa món đồ đang cầm (Sau khi Trạm đã nuốt)
+        public void RemoveCurrentItem()
+        {
+            if (_inventory.Count == 0) return;
+
+            // Không cần vứt vật lý (Drop), chỉ cần xóa khỏi List Logic
+            _inventory.RemoveAt(_currentSlotIndex);
+
+            // Reset index nếu bị lệch
+            if (_currentSlotIndex >= _inventory.Count) _currentSlotIndex = _inventory.Count - 1;
+            if (_currentSlotIndex < 0) _currentSlotIndex = 0;
+
+            // Cập nhật lại hình ảnh trên tay
+            _inventoryLogic.RefreshHandVisuals(_inventory, _currentSlotIndex, _holdPosition);
+        }
+        
         public void DropCurrentItem()
         {
             if (_inventory.Count == 0) return;
@@ -327,6 +361,22 @@ namespace _Project.Scripts.Model
             else
                 _hudView.SetInteractionText("");
         }
+        
+        private void HandleAudio()
+        {
+            if (_audioLogic == null) return;
+
+            // Check xem có đang di chuyển không
+            Vector2 input = _inputHandler.GetMoveInput();
+            bool isMoving = input != Vector2.zero; // Hoặc check _rb.velocity.magnitude > 0.1f
+            bool isRunning = _inputHandler.IsRunPressed();
+
+            // Chỉ phát tiếng khi đang đứng dưới đất
+            // (Bạn cần thêm biến _isGrounded vào logic check, tạm thời dùng check input)
+            // Tốt nhất là check IsGrounded từ C_MovementLogic hoặc Raycast
+        
+            _audioLogic.ProcessFootsteps(isMoving, isRunning);
+        }
 
         // Hàm nhận sát thương (Public để Quái/Môi trường gọi)
         public void ApplyDamage(float amount)
@@ -357,6 +407,9 @@ namespace _Project.Scripts.Model
         
             // Tắt di chuyển physics
             _rb.isKinematic = true;
+            
+            // Gọi Manager báo thua
+            Mgr_GameLevel.Instance.TriggerGameOver("Bạn đã tử nạn!");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using _Project.Scripts.Interfaces;
 using _Project.Scripts.Model;
+using _Project.Scripts.Utilities;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -8,6 +9,8 @@ public class Item_Scrap : MonoBehaviour, IInteractable
 {
     [Header("--- DATA ---")]
     [SerializeField] private string _itemName = "Scrap";
+    [Header("--- TYPE DATA (NEW) ---")]
+    [SerializeField] private ScrapType _scrapType = ScrapType.Generic; 
     
     [Tooltip("Vật này chiếm bao nhiêu ô? (Tối đa 4)")]
     [Range(1, 4)]
@@ -32,7 +35,7 @@ public class Item_Scrap : MonoBehaviour, IInteractable
     public string GetInteractionPrompt()
     {
         // Hiển thị tên + số ô chiếm dụng
-        return $"Pick up {_itemName} (Size: {_slotSize})";
+        return $"Pick up {_itemName} ({_scrapType}) - Size: {_slotSize}";
     }
 
     public bool IsHoldable() => true;
@@ -67,4 +70,5 @@ public class Item_Scrap : MonoBehaviour, IInteractable
     public float GetWeight() => _weight;
     public Vector3 GetHoldOffset() => _holdOffset;
     public Quaternion GetHoldRotation() => _holdRotation;
+    public ScrapType GetScrapType() => _scrapType;
 }
