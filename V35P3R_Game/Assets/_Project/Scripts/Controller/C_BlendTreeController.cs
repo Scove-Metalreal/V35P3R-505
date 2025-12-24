@@ -18,7 +18,7 @@ public class C_BlendTreeController : MonoBehaviour
     Vector2 currentMovement;
     bool movementPressed;
     bool runPressed;
-    bool crouchPressed;
+    bool crouchPressed = false;
     public virtual void Awake()
     {
         input = new C_PlayerInput();
@@ -36,15 +36,24 @@ public class C_BlendTreeController : MonoBehaviour
         };
         input.Player.Sprint.performed += ctx => runPressed = true;
         input.Player.Sprint.canceled += ctx => runPressed = false;
-        input.Player.Crouch.performed += ctx => crouchPressed = true;
-        input.Player.Crouch.canceled += ctx => crouchPressed = false;
+        input.Player.Crouch.performed += ctx =>
+        {
+            if (!crouchPressed)
+            {
+                crouchPressed = true;
+            }
+            else
+            {
+                crouchPressed = false;
+            }
+        };
     }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
         anim = GetComponent<Animator>();
-        VelocityZHash = Animator.StringToHash("Velocity Z");
-        VelocityXHash = Animator.StringToHash("Velocity X");
+        VelocityZHash = Animator.StringToHash("VelocityZ");
+        VelocityXHash = Animator.StringToHash("VelocityX");
     }
 
     // Update is called once per frame
