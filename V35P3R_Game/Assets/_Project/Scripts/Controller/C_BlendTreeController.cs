@@ -52,8 +52,8 @@ public class C_BlendTreeController : MonoBehaviour
     public virtual void Start()
     {
         anim = GetComponent<Animator>();
-        VelocityZHash = Animator.StringToHash("Velocity Z");
-        VelocityXHash = Animator.StringToHash("Velocity X");
+        VelocityZHash = Animator.StringToHash("VelocityZ");
+        VelocityXHash = Animator.StringToHash("VelocityX");
     }
 
     // Update is called once per frame
