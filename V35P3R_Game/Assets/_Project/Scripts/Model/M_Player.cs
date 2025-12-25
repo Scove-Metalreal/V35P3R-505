@@ -5,6 +5,7 @@ using _Project.Scripts.Managers;
 // using _Project.Scripts.Managers;
 using _Project.Scripts.View;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Model
 {
@@ -214,10 +215,11 @@ namespace _Project.Scripts.Model
         private void HandleCameraLook()
         {
             // Lấy Mouse Y (Lên xuống)
-            float mouseY = _inputHandler.GetMouseDelta().y * _moveLogic.GetSensitivity() * Time.deltaTime;
-        
+            
+            float mouseX = Mouse.current.delta.x.ReadValue() * _moveLogic.GetSensitivity()  * Time.deltaTime;
+            float mouseY = Mouse.current.delta.y.ReadValue() * _moveLogic.GetSensitivity()  * Time.deltaTime;
             // Tính toán góc gật đầu
-            Quaternion headRot = _moveLogic.CalculateHeadRotation(mouseY);
+            Quaternion headRot = _moveLogic.CalculateHeadRotation(mouseY,mouseX);
         
             // Áp dụng vào Camera
             _headTransform.localRotation = headRot;
