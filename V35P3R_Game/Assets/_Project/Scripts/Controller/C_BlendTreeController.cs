@@ -14,43 +14,43 @@ public class C_BlendTreeController : MonoBehaviour
     int VelocityZHash;
     int VelocityXHash;
 
-    public C_PlayerInput input;
+    // public C_PlayerInput input;
     Vector2 currentMovement;
     bool movementPressed;
     bool runPressed;
     bool crouchPressed = false;
     bool jumpPressed;
-    public virtual void Awake()
-    {
-        input = new C_PlayerInput();
-
-        // set the player input values using listeners
-        input.Player.Move.performed += ctx =>
-        {
-            currentMovement = ctx.ReadValue<Vector2>();
-            movementPressed = currentMovement.x != 0 || currentMovement.y != 0;
-        };
-        input.Player.Move.canceled += ctx =>
-        {
-            currentMovement = Vector2.zero;
-            movementPressed = false;
-        };
-        input.Player.Sprint.performed += ctx => runPressed = true;
-        input.Player.Sprint.canceled += ctx => runPressed = false;
-        input.Player.Jump.performed += ctx => jumpPressed = true;
-        input.Player.Jump.canceled += ctx => jumpPressed = false;
-        input.Player.Crouch.performed += ctx =>
-        {
-            if (!crouchPressed)
-            {
-                crouchPressed = true;
-            }
-            else
-            {
-                crouchPressed = false;
-            }
-        };
-    }
+    // public virtual void Awake()
+    // {
+    //     input = new C_PlayerInput();
+    //
+    //     // set the player input values using listeners
+    //     input.Player.Move.performed += ctx =>
+    //     {
+    //         currentMovement = ctx.ReadValue<Vector2>();
+    //         movementPressed = currentMovement.x != 0 || currentMovement.y != 0;
+    //     };
+    //     input.Player.Move.canceled += ctx =>
+    //     {
+    //         currentMovement = Vector2.zero;
+    //         movementPressed = false;
+    //     };
+    //     input.Player.Sprint.performed += ctx => runPressed = true;
+    //     input.Player.Sprint.canceled += ctx => runPressed = false;
+    //     input.Player.Jump.performed += ctx => jumpPressed = true;
+    //     input.Player.Jump.canceled += ctx => jumpPressed = false;
+    //     input.Player.Crouch.performed += ctx =>
+    //     {
+    //         if (!crouchPressed)
+    //         {
+    //             crouchPressed = true;
+    //         }
+    //         else
+    //         {
+    //             crouchPressed = false;
+    //         }
+    //     };
+    // }
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public virtual void Start()
     {
@@ -117,13 +117,13 @@ public class C_BlendTreeController : MonoBehaviour
         anim.SetFloat(VelocityXHash, velocityX);
     }
 
-    void OnEnable()
-    {
-        input.Enable();
-    }
-
-    void OnDisable()
-    {
-        input.Disable();
-    }
+    // void OnEnable()
+    // {
+    //     input.Enable();
+    // }
+    //
+    // void OnDisable()
+    // {
+    //     input.Disable();
+    // }
 }

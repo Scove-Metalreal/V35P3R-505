@@ -29,7 +29,7 @@ namespace _Project.Scripts.Controller
             xRotation -= mouseY;
 
             // Kẹp góc để không gãy cổ
-            xRotation = Mathf.Clamp(xRotation, -_minPitch, _maxPitch);
+            xRotation = Mathf.Clamp(xRotation, _minPitch, _maxPitch);
 
             // Trả về góc xoay cục bộ (Local X)
             return  Quaternion.Euler(xRotation, yRotation, 0f);
