@@ -5270,7 +5270,7 @@ MonoBehaviour:
   _gravityLogic: {fileID: 1851284775166426726}
   _moveLogic: {fileID: 2824713580658162506}
   _inventoryLogic: {fileID: 1953880026786342571}
-  _audioLogic: {fileID: 0}
+  _audioLogic: {fileID: 7589686408358487522}
   _headTransform: {fileID: 8702187540746765828}
   _bodyModel: {fileID: 572446057038123113}
   _visual: {fileID: 127393669331146705}
@@ -6453,6 +6453,7 @@ GameObject:
   - component: {fileID: 1061340877501115447}
   - component: {fileID: 1851284775166426726}
   - component: {fileID: 1953880026786342571}
+  - component: {fileID: 7589686408358487522}
   m_Layer: 7
   m_Name: ' --- LOGIC_CONFIG --- '
   m_TagString: Untagged
@@ -6551,6 +6552,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_InventoryLogic
   _maxSlots: 4
+--- !u!114 &7589686408358487522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417323851575041114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed374e31b53a465ea4b5064b4e46f02d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_PlayerAudio
+  _stepIntervalWalk: 0.5
+  _stepIntervalRun: 0.3
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &6569435528209149253
 GameObject:
   m_ObjectHideFlags: 0
