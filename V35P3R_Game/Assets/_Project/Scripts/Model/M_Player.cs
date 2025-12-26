@@ -1,8 +1,11 @@
+using System.Collections.Generic;
 using _Project.Scripts.Controller;
 using _Project.Scripts.Interfaces;
+using _Project.Scripts.Managers;
 // using _Project.Scripts.Managers;
 using _Project.Scripts.View;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Model
 {
@@ -13,6 +16,8 @@ namespace _Project.Scripts.Model
         [SerializeField] private C_InputHandler _inputHandler;
         [SerializeField] private C_GravityLogic _gravityLogic;
         [SerializeField] private C_MovementLogic _moveLogic;
+        [SerializeField] private C_InventoryLogic _inventoryLogic;
+        [SerializeField] private C_PlayerAudio _audioLogic;
 
         [Header("--- VISUALS ---")]
         [SerializeField] private Transform _headTransform; // Gắn object Camera vào đây
@@ -30,15 +35,16 @@ namespace _Project.Scripts.Model
         // --- STATE (TRẠNG THÁI) ---
         private Rigidbody _rb;
         private C_GravityLogic.GravityDirection _currentGravityDir = C_GravityLogic.GravityDirection.Down;
-        // Biến lưu trữ vật đang cầm trên tay
-        // private Item_Scrap _heldItem = null;
-    
         // Biến lưu vật đang nhìn thấy (để hiện UI)
         private IInteractable _currentTarget = null; 
-        
+        private bool _isDead = false;
+        // Chỉ s món đồ đang cầm trên tay (0, 1, 2...)
+        private int _currentSlotIndex = 0;
+        // Danh sách đồ trong túi
+        [SerializeField] private List<Item_Scrap> _inventory = new List<Item_Scrap>();
         [SerializeField] private float _currentHealth;
         [SerializeField] private float _currentOxygen;
-        private bool _isDead = false;
+        
 
 
         private void Awake()
@@ -53,6 +59,12 @@ namespace _Project.Scripts.Model
             
             if (_inputHandler == null) _inputHandler = GetComponent<C_InputHandler>();
             if (_headTransform == null) _headTransform = GetComponentInChildren<Camera>().transform;
+            if (_audioLogic == null) _audioLogic = GetComponentInChildren<C_PlayerAudio>();
+        
+            if (_audioLogic != null)
+            {
+                _audioLogic.Setup(transform);
+            }
         }
 
         private void Start()
@@ -86,6 +98,8 @@ namespace _Project.Scripts.Model
             // 2. Xử lý Xoay Camera & Body (Logic mới của bạn)
             HandleCameraLook();
             HandleSurvivalStats();
+            HandleInventoryInput();
+            HandleAudio();
 
             // 3. Visual Animation
             if (_visual != null)
@@ -198,59 +212,134 @@ namespace _Project.Scripts.Model
             }
         }
         
-        private void HandleDrop()
-        {
-            // Nếu đang cầm đồ mà bấm G (Giả sử map nút G là Drop, hoặc bấm chuột trái)
-            // Bạn cần map thêm nút Drop trong Input System hoặc dùng tạm nút nào đó
-            // Ví dụ: Bấm E lần nữa để thả
-        
-            // (Logic tạm: Nếu đang cầm đồ mà bấm E thì thả ra)
-            /*
-            if (_heldItem != null && _inputHandler.IsInteractPressed())
-            {
-                 DropItem();
-            }
-            */
-        }
-        
         private void HandleCameraLook()
         {
             // Lấy Mouse Y (Lên xuống)
-            float mouseY = _inputHandler.GetMouseDelta().y * _moveLogic.GetSensitivity() * Time.deltaTime;
-        
+            
+            float mouseX = Mouse.current.delta.x.ReadValue() * _moveLogic.GetSensitivity()  * Time.deltaTime;
+            float mouseY = Mouse.current.delta.y.ReadValue() * _moveLogic.GetSensitivity()  * Time.deltaTime;
             // Tính toán góc gật đầu
-            Quaternion headRot = _moveLogic.CalculateHeadRotation(mouseY);
+            Quaternion headRot = _moveLogic.CalculateHeadRotation(mouseY,mouseX);
         
             // Áp dụng vào Camera
             _headTransform.localRotation = headRot;
         }
         
-        // public void PickupItem(Item_Scrap item)
-        // {
-        //     if (_heldItem != null) return; // Đang cầm rồi thì thôi
-        //
-        //     _heldItem = item;
-        //
-        //     // Gọi Logic để gắn vật vào tay (Visual & Physics)
-        //     _interactLogic.AttachItemToHand(item.transform, _holdPosition);
-        //
-        //     // Logic game: Có thể giảm tốc độ di chuyển vì nặng
-        //     // _moveLogic.SetWeightPenalty(item.GetWeight()); (Nếu có tính năng này)
-        //
-        //     Debug.Log($"Picked up: {item.name}");
-        // }
-        //
-        // public void DropItem()
-        // {
-        //     if (_heldItem == null) return;
-        //
-        //     // Gọi Logic để tách vật ra (Visual & Physics)
-        //     // Ném về phía trước Camera một chút
-        //     _interactLogic.DetachItem(_heldItem.transform, _headTransform.forward * 5f);
-        //
-        //     _heldItem = null;
-        //     Debug.Log("Dropped item");
-        // }
+        public void TryPickupItem(Item_Scrap item)
+        {
+            // 1. Check xem đủ chỗ không
+            if (!_inventoryLogic.CanPickupItem(_inventory, item))
+            {
+                Debug.Log("❌ Túi đầy! Không nhặt được.");
+                // TODO: Hiện UI báo "Inventory Full"
+                return;
+            }
+
+            // 2. Thêm vào List
+            _inventory.Add(item);
+        
+            // 3. Tắt vật lý của item
+            item.OnPickUp();
+
+            // 4. Tự động chuyển tay sang món vừa nhặt
+            _currentSlotIndex = _inventory.Count - 1;
+            UpdateHandVisuals();
+
+            Debug.Log($"Đã nhặt: {item.name}. Tổng Slot: {_inventoryLogic.CalculateTotalSlots(_inventory)}/4");
+        }
+        
+        private void HandleDrop()
+        {
+            // Giả sử bấm G để vứt (cần map phím Drop trong Input System)
+            // Hoặc dùng tạm nút Interact nếu đang cầm đồ (như logic cũ)
+            // Ở đây tôi giả định bạn thêm nút Drop vào Input Handler
+            // if (_inputHandler.IsDropPressed()) ...
+        
+            // Code tạm: Bấm G (dùng Input.GetKeyDown tạm để test, bạn hãy chuyển vào InputSystem sau)
+            if (UnityEngine.Input.GetKeyDown(KeyCode.G)) 
+            {
+                DropCurrentItem();
+            }
+        }
+        
+        // 1. Trả về món đồ đang cầm trên tay (để Trạm kiểm tra)
+        public Item_Scrap GetCurrentHeldItem()
+        {
+            if (_inventory.Count == 0) return null;
+            if (_currentSlotIndex >= _inventory.Count) return null;
+
+            return _inventory[_currentSlotIndex];
+        }
+        
+        // 2. Xóa món đồ đang cầm (Sau khi Trạm đã nuốt)
+        public void RemoveCurrentItem()
+        {
+            if (_inventory.Count == 0) return;
+
+            // Không cần vứt vật lý (Drop), chỉ cần xóa khỏi List Logic
+            _inventory.RemoveAt(_currentSlotIndex);
+
+            // Reset index nếu bị lệch
+            if (_currentSlotIndex >= _inventory.Count) _currentSlotIndex = _inventory.Count - 1;
+            if (_currentSlotIndex < 0) _currentSlotIndex = 0;
+
+            // Cập nhật lại hình ảnh trên tay
+            _inventoryLogic.RefreshHandVisuals(_inventory, _currentSlotIndex, _holdPosition);
+        }
+        
+        public void DropCurrentItem()
+        {
+            if (_inventory.Count == 0) return;
+            if (_currentSlotIndex >= _inventory.Count) return;
+
+            // Lấy item đang cầm
+            Item_Scrap itemToDrop = _inventory[_currentSlotIndex];
+
+            // 1. Xử lý vật lý vứt ra
+            Vector3 throwForce = _headTransform.forward * 5f;
+            itemToDrop.OnDrop(throwForce);
+
+            // 2. Xóa khỏi List
+            _inventory.RemoveAt(_currentSlotIndex);
+
+            // 3. Cập nhật lại chỉ số (để không bị out of range)
+            if (_currentSlotIndex >= _inventory.Count)
+            {
+                _currentSlotIndex = _inventory.Count - 1;
+            }
+        
+            if (_currentSlotIndex < 0) _currentSlotIndex = 0;
+
+            // 4. Cập nhật hình ảnh trên tay
+            UpdateHandVisuals();
+        }
+        
+        private void HandleInventoryInput()
+        {
+            if (_inventory.Count <= 1) return; // Có 0 hoặc 1 món thì không cần đổi
+
+            // Lấy lăn chuột (Mouse Scroll)
+            // Lưu ý: Input System trả về Vector2, y là lăn lên/xuống
+            float scroll = UnityEngine.Input.mouseScrollDelta.y; // Dùng tạm Input cũ cho nhanh, hoặc map vào Input System
+
+            if (scroll > 0)
+            {
+                _currentSlotIndex++;
+                if (_currentSlotIndex >= _inventory.Count) _currentSlotIndex = 0;
+                UpdateHandVisuals();
+            }
+            else if (scroll < 0)
+            {
+                _currentSlotIndex--;
+                if (_currentSlotIndex < 0) _currentSlotIndex = _inventory.Count - 1;
+                UpdateHandVisuals();
+            }
+        }
+        
+        private void UpdateHandVisuals()
+        {
+            _inventoryLogic.RefreshHandVisuals(_inventory, _currentSlotIndex, _holdPosition);
+        }
         
         private void HandleSurvivalStats()
         {
@@ -273,6 +362,22 @@ namespace _Project.Scripts.Model
                 _hudView.SetInteractionText(_currentTarget.GetInteractionPrompt());
             else
                 _hudView.SetInteractionText("");
+        }
+        
+        private void HandleAudio()
+        {
+            if (_audioLogic == null) return;
+
+            // Check xem có đang di chuyển không
+            Vector2 input = _inputHandler.GetMoveInput();
+            bool isMoving = input != Vector2.zero; // Hoặc check _rb.velocity.magnitude > 0.1f
+            bool isRunning = _inputHandler.IsRunPressed();
+
+            // Chỉ phát tiếng khi đang đứng dưới đất
+            // (Bạn cần thêm biến _isGrounded vào logic check, tạm thời dùng check input)
+            // Tốt nhất là check IsGrounded từ C_MovementLogic hoặc Raycast
+        
+            _audioLogic.ProcessFootsteps(isMoving, isRunning);
         }
 
         // Hàm nhận sát thương (Public để Quái/Môi trường gọi)
@@ -304,6 +409,9 @@ namespace _Project.Scripts.Model
         
             // Tắt di chuyển physics
             _rb.isKinematic = true;
+            
+            // Gọi Manager báo thua
+            Mgr_GameLevel.Instance.TriggerGameOver("Bạn đã tử nạn!");
         }
     }
 }

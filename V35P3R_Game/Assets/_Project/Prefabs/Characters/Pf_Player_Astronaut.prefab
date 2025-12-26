@@ -5269,6 +5269,7 @@ MonoBehaviour:
   _inputHandler: {fileID: 7177097345351411868}
   _gravityLogic: {fileID: 1851284775166426726}
   _moveLogic: {fileID: 2824713580658162506}
+  _inventoryLogic: {fileID: 1953880026786342571}
   _headTransform: {fileID: 5753123612849745186}
   _bodyModel: {fileID: 572446057038123113}
   _visual: {fileID: 127393669331146705}
@@ -5276,6 +5277,7 @@ MonoBehaviour:
   _holdPosition: {fileID: 4152684287776266159}
   _statsLogic: {fileID: 6627417866286608646}
   _hudView: {fileID: 0}
+  _inventory: []
   _currentHealth: 0
   _currentOxygen: 0
 --- !u!114 &7177097345351411868
@@ -6448,6 +6450,7 @@ GameObject:
   - component: {fileID: 2824713580658162506}
   - component: {fileID: 1061340877501115447}
   - component: {fileID: 1851284775166426726}
+  - component: {fileID: 1953880026786342571}
   m_Layer: 7
   m_Name: ' --- LOGIC_CONFIG --- '
   m_TagString: Untagged
@@ -6533,6 +6536,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_GravityLogic
   _gravityForce: 20
+--- !u!114 &1953880026786342571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417323851575041114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b21d0495023422882a2327beeaa25f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_InventoryLogic
+  _maxSlots: 4
 --- !u!1 &6569435528209149253
 GameObject:
   m_ObjectHideFlags: 0
