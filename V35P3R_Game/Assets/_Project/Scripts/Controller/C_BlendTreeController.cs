@@ -19,6 +19,7 @@ public class C_BlendTreeController : MonoBehaviour
     bool movementPressed;
     bool runPressed;
     bool crouchPressed = false;
+    bool jumpPressed;
     public virtual void Awake()
     {
         input = new C_PlayerInput();
@@ -36,6 +37,8 @@ public class C_BlendTreeController : MonoBehaviour
         };
         input.Player.Sprint.performed += ctx => runPressed = true;
         input.Player.Sprint.canceled += ctx => runPressed = false;
+        input.Player.Jump.performed += ctx => jumpPressed = true;
+        input.Player.Jump.canceled += ctx => jumpPressed = false;
         input.Player.Crouch.performed += ctx =>
         {
             if (!crouchPressed)
@@ -67,6 +70,12 @@ public class C_BlendTreeController : MonoBehaviour
         else
         {
             anim.SetBool("isCrouch", false);
+        }
+
+        if (jumpPressed)
+        {
+            // anim.SetBool("isGrounded", false);
+            anim.SetBool("isJumping", true);
         }
     }
 
