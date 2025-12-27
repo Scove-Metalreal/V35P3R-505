@@ -92,8 +92,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 307029088732991427}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.21209088, y: -0.19058718, z: 0.039562616, w: 0.9576685}
-  m_LocalPosition: {x: -0.098689556, y: 1.0507386, z: 0.21688509}
+  m_LocalRotation: {x: 0.19479719, y: -0.20206825, z: 0.03385396, w: 0.95920616}
+  m_LocalPosition: {x: -0.08429241, y: 0.9714342, z: 0.1791768}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5199,7 +5199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00490b506f08411ba7aade85feb2a650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.View.V_PlayerVisual
-  _dampTime: 0.1
+  _dampTime: 0
 --- !u!114 &127393669331146705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5212,7 +5212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00490b506f08411ba7aade85feb2a650, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.View.V_PlayerVisual
-  _dampTime: 0.1
+  _dampTime: 0
 --- !u!1 &963117755748921466
 GameObject:
   m_ObjectHideFlags: 0
@@ -5225,8 +5225,8 @@ GameObject:
   - component: {fileID: 8071250771365223232}
   - component: {fileID: 7177097345351411868}
   - component: {fileID: 1930650719629728987}
-  - component: {fileID: 768160578719928632}
   - component: {fileID: 7394768724056606613}
+  - component: {fileID: 6158691334284227547}
   m_Layer: 7
   m_Name: Pf_Player_Astronaut
   m_TagString: Player
@@ -5269,13 +5269,16 @@ MonoBehaviour:
   _inputHandler: {fileID: 7177097345351411868}
   _gravityLogic: {fileID: 1851284775166426726}
   _moveLogic: {fileID: 2824713580658162506}
-  _headTransform: {fileID: 5753123612849745186}
+  _inventoryLogic: {fileID: 1953880026786342571}
+  _audioLogic: {fileID: 7589686408358487522}
+  _headTransform: {fileID: 8702187540746765828}
   _bodyModel: {fileID: 572446057038123113}
   _visual: {fileID: 127393669331146705}
   _interactLogic: {fileID: 1061340877501115447}
   _holdPosition: {fileID: 4152684287776266159}
   _statsLogic: {fileID: 6627417866286608646}
   _hudView: {fileID: 0}
+  _inventory: []
   _currentHealth: 0
   _currentOxygen: 0
 --- !u!114 &7177097345351411868
@@ -5317,28 +5320,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!64 &768160578719928632
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963117755748921466}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3240111963191467312, guid: 3ffd6d9c66bc22a4fa1a4a218eca66ae, type: 3}
 --- !u!114 &7394768724056606613
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5369,6 +5350,29 @@ MonoBehaviour:
   m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 1868355659964884283}
+--- !u!136 &6158691334284227547
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963117755748921466}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.88545966
+  m_Height: 3.3451662
+  m_Direction: 1
+  m_Center: {x: -0.029421568, y: 1.92, z: 0}
 --- !u!1 &1116335556578847112
 GameObject:
   m_ObjectHideFlags: 0
@@ -5779,8 +5783,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2900884904707818054}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.09, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6032,14 +6036,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4007217726136107770}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.018445134, y: 0.01120367, z: -0.0015555628, w: 0.9997659}
+  m_LocalRotation: {x: 0, y: 0, z: -0.0013527189, w: 0.9999991}
   m_LocalPosition: {x: -0, y: 0.27971098, z: 0.000000047618588}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5880907613739254506}
   m_Father: {fileID: 391795277323151341}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.155}
 --- !u!1 &4315052367185916391
 GameObject:
   m_ObjectHideFlags: 0
@@ -6448,6 +6452,8 @@ GameObject:
   - component: {fileID: 2824713580658162506}
   - component: {fileID: 1061340877501115447}
   - component: {fileID: 1851284775166426726}
+  - component: {fileID: 1953880026786342571}
+  - component: {fileID: 7589686408358487522}
   m_Layer: 7
   m_Name: ' --- LOGIC_CONFIG --- '
   m_TagString: Untagged
@@ -6498,12 +6504,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61153bd7c929424cb1b48965a97aa735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_MovementLogic
-  _walkSpeed: 2.5
-  _runSpeed: 5
-  _jumpForce: 5
-  _sensitivity: 30
-  _minPitch: -229.59
-  _maxPitch: 664.5
+  _walkSpeed: 7
+  _runSpeed: 10
+  _jumpForce: 1
+  _sensitivity: 2
+  _minPitch: -85
+  _maxPitch: 85
 --- !u!114 &1061340877501115447
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6533,6 +6539,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_GravityLogic
   _gravityForce: 20
+--- !u!114 &1953880026786342571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417323851575041114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b21d0495023422882a2327beeaa25f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_InventoryLogic
+  _maxSlots: 4
+--- !u!114 &7589686408358487522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6417323851575041114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed374e31b53a465ea4b5064b4e46f02d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Controller.C_PlayerAudio
+  _stepIntervalWalk: 0.5
+  _stepIntervalRun: 0.3
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &6569435528209149253
 GameObject:
   m_ObjectHideFlags: 0
@@ -6560,7 +6596,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6569435528209149253}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0.000000005108773, y: -0.000000004781408, z: -6.790794e-10, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

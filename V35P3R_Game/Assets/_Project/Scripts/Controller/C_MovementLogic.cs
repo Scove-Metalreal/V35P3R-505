@@ -11,26 +11,28 @@ namespace _Project.Scripts.Controller
 
         [Header("--- LOOK SETTINGS ---")]
         [SerializeField] private float _sensitivity = 15f; // Độ nhạy chuột
-        [SerializeField] private float _minPitch = -85f;   // Nhìn xuống tối đa
-        [SerializeField] private float _maxPitch = 85f;    // Nhìn lên tối đa
+        [SerializeField] private float _minPitch = -30f;   // Nhìn xuống tối đa
+        [SerializeField] private float _maxPitch = 10f;    // Nhìn lên tối đa
 
         // Biến lưu góc gật đầu (Pitch) - Cái này cần lưu lại để Clamp
-        private float _currentPitch = 0f;
+        private float yRotation = 0f;
+        private float xRotation = 0f;
 
         // --- HÀM 1: TÍNH GÓC XOAY CAMERA (CHỈ HEAD) ---
         // Input: Mouse Y
         // Output: Quaternion cho Camera
-        public Quaternion CalculateHeadRotation(float mouseY)
+        public Quaternion CalculateHeadRotation(float mouseY,float mouseX)
         {
             // Cộng dồn góc nhìn (Nhân sensitivity và deltaTime bên ngoài truyền vào)
             // Trừ đi vì chuột lên là nhìn lên (ngược chiều Euler)
-            _currentPitch -= mouseY; 
+            yRotation += mouseX;
+            xRotation -= mouseY;
 
             // Kẹp góc để không gãy cổ
-            _currentPitch = Mathf.Clamp(_currentPitch, _minPitch, _maxPitch);
+            xRotation = Mathf.Clamp(xRotation, _minPitch, _maxPitch);
 
             // Trả về góc xoay cục bộ (Local X)
-            return Quaternion.Euler(_currentPitch, 0f, 0f);
+            return  Quaternion.Euler(xRotation, yRotation, 0f);
         }
 
         // --- HÀM 2: TÍNH VECTOR DI CHUYỂN ---
