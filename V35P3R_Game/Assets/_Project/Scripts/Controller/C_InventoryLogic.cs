@@ -41,6 +41,7 @@ namespace _Project.Scripts.Controller
                     // Món đang chọn: Hiện lên + Gắn vào tay
                     inventory[i].gameObject.SetActive(true);
                     inventory[i].transform.SetParent(handPos);
+                    
                     inventory[i].transform.localPosition = inventory[i].GetHoldOffset();
                     inventory[i].transform.localRotation = inventory[i].GetHoldRotation();
                 }

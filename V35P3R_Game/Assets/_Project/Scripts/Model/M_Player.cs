@@ -31,7 +31,7 @@ namespace _Project.Scripts.Model
         [Header("--- STATS WIRING ---")]
         [SerializeField] private C_StatsLogic _statsLogic; // Kéo script Logic Stats vào
         [SerializeField] private V_PlayerHUD _hudView;     // Kéo Canvas HUD vào
-
+        
         // --- STATE (TRẠNG THÁI) ---
         private Rigidbody _rb;
         private C_GravityLogic.GravityDirection _currentGravityDir = C_GravityLogic.GravityDirection.Down;
@@ -92,15 +92,16 @@ namespace _Project.Scripts.Model
         private void Update()
         {
             if (_isDead) return;
-
+            
             // 1. Các logic game (Chỉ gọi 1 lần thôi nhé)
             HandleGravitySwitch();
             // 2. Xử lý Xoay Camera & Body (Logic mới của bạn)
+            HandleInteraction();
             HandleCameraLook();
             HandleSurvivalStats();
             HandleInventoryInput();
             HandleAudio();
-
+            HandleDrop();
             // 3. Visual Animation
             if (_visual != null)
             {
@@ -110,17 +111,24 @@ namespace _Project.Scripts.Model
                     _inputHandler.IsCrouchPressed()
                 );
             }
+            if (Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                // _rb.AddForce(gravityUp * _moveLogic.GetJumpForce(), ForceMode.Impulse);
+                Vector3 jumpDir = -_gravityLogic.CurrentGravity.normalized;
+                GetComponent<Rigidbody>().AddForce(jumpDir * _moveLogic.GetJumpForce(), ForceMode.Impulse);
+            }
         }
 
         // --- PHYSICS LOOP: XỬ LÝ DI CHUYỂN & VẬT LÝ ---
         private void FixedUpdate()
         {
             if (_isDead) return;
-
-            // --- BƯỚC 1: TRỌNG LỰC ---
             Vector3 gravityForce = _gravityLogic.CalculateGravityForce(_currentGravityDir);
-            Vector3 gravityUp = -gravityForce.normalized;
             _rb.AddForce(gravityForce, ForceMode.Acceleration);
+            // --- BƯỚC 1: TRỌNG LỰC ---
+            
+            Vector3 gravityUp = -_gravityLogic.CurrentGravity.normalized;
+            
 
             // --- BƯỚC 2: XOAY NHÂN VẬT (QUAN TRỌNG NHẤT) ---
         
@@ -150,10 +158,7 @@ namespace _Project.Scripts.Model
             _rb.MovePosition(_rb.position + moveVelocity * Time.fixedDeltaTime);
 
             // --- BƯỚC 4: NHẢY ---
-            if (_inputHandler.IsJumpPressed())
-            {
-                _rb.AddForce(gravityUp * _moveLogic.GetJumpForce(), ForceMode.Impulse);
-            }
+            
         }
         
         
@@ -202,7 +207,7 @@ namespace _Project.Scripts.Model
             }
 
             // 2. Nếu bấm E và đang nhìn thấy vật -> Tương tác
-            if (_inputHandler.IsInteractPressed() && _currentTarget != null)
+            if (Keyboard.current.eKey.wasPressedThisFrame && _currentTarget != null)
             {
                 // Nếu tay đang rảnh thì mới nhặt
                 // if (_heldItem == null)
@@ -256,7 +261,7 @@ namespace _Project.Scripts.Model
             // if (_inputHandler.IsDropPressed()) ...
         
             // Code tạm: Bấm G (dùng Input.GetKeyDown tạm để test, bạn hãy chuyển vào InputSystem sau)
-            if (UnityEngine.Input.GetKeyDown(KeyCode.G)) 
+            if (Keyboard.current.gKey.wasPressedThisFrame) 
             {
                 DropCurrentItem();
             }
@@ -313,7 +318,26 @@ namespace _Project.Scripts.Model
             // 4. Cập nhật hình ảnh trên tay
             UpdateHandVisuals();
         }
-        
+        public void ConsumeCurrentItem()
+        {
+            if (_inventory.Count == 0) return;
+            if (_currentSlotIndex >= _inventory.Count) return;
+
+            Item_Scrap item = _inventory[_currentSlotIndex];
+
+            Destroy(item.gameObject); // tiêu hao
+
+            _inventory.RemoveAt(_currentSlotIndex);
+
+            if (_currentSlotIndex >= _inventory.Count)
+                _currentSlotIndex = _inventory.Count - 1;
+
+            if (_currentSlotIndex < 0)
+                _currentSlotIndex = 0;
+
+            UpdateHandVisuals();
+        }
+
         private void HandleInventoryInput()
         {
             if (_inventory.Count <= 1) return; // Có 0 hoặc 1 món thì không cần đổi

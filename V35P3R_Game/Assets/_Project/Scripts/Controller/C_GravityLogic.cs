@@ -13,19 +13,33 @@ namespace _Project.Scripts.Controller
         }
 
         [Header("--- SETTINGS ---")]
-        [SerializeField] private float _gravityForce = 20f; // Giá trị gốc của bạn là 20f
+        [SerializeField] private float _gravityForce = 9.81f; // Giá trị gốc của bạn là 20f
 
+        public Vector3 Gravity;
+        public Vector3 CurrentGravity => Gravity;
         // Hàm 1: Từ Enum -> Trả về Vector lực hút (để M_Player AddForce)
         public Vector3 CalculateGravityForce(GravityDirection dir)
         {
             switch (dir)
             {
-                case GravityDirection.Down:     return Vector3.down * _gravityForce;
-                case GravityDirection.Up:       return Vector3.up * _gravityForce;
-                case GravityDirection.Left:     return Vector3.left * _gravityForce;
-                case GravityDirection.Right:    return Vector3.right * _gravityForce;
-                case GravityDirection.Forward:  return Vector3.forward * _gravityForce;
-                case GravityDirection.Backward: return Vector3.back * _gravityForce;
+                case GravityDirection.Down:
+                    Gravity = Vector3.down * _gravityForce;
+                    return Vector3.down * _gravityForce;
+                case GravityDirection.Up:
+                    Gravity = Vector3.up * _gravityForce;
+                    return Vector3.up * _gravityForce;
+                case GravityDirection.Left:
+                    Gravity = Vector3.left * _gravityForce;
+                    return Vector3.left * _gravityForce;
+                case GravityDirection.Right:
+                    Gravity = Vector3.right * _gravityForce;
+                    return Vector3.right * _gravityForce;
+                case GravityDirection.Forward:
+                    Gravity = Vector3.forward * _gravityForce;
+                    return Vector3.forward * _gravityForce;
+                case GravityDirection.Backward:
+                    Gravity = Vector3.back * _gravityForce;
+                    return Vector3.back * _gravityForce;
                 default:                        return Vector3.down * _gravityForce;
             }
         }

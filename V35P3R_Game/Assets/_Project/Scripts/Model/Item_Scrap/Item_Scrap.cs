@@ -50,6 +50,7 @@ public class Item_Scrap : MonoBehaviour, IInteractable
     {
         _rb.isKinematic = true;
         _col.enabled = false;
+        GetComponent<Rigidbody>().useGravity = false;
         // Logic mới: Khi nhặt vào túi, nếu không cầm trên tay thì ẩn đi
         // Nhưng tạm thời cứ để logic này, M_Player sẽ quyết định ẩn/hiện
     }
@@ -63,8 +64,20 @@ public class Item_Scrap : MonoBehaviour, IInteractable
         // Bắt buộc hiện lại khi vứt ra
         gameObject.SetActive(true);
         transform.SetParent(null);
+        GetComponent<Rigidbody>().useGravity = true;
     }
+
     
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+
+        M_Player player = other.GetComponent<M_Player>();
+        if (player == null) return;
+
+        player.TryPickupItem(this);
+    }
     // GETTERS
     public int GetSlotSize() => _slotSize;
     public float GetWeight() => _weight;
