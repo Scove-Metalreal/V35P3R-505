@@ -740,6 +740,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0.1791189
       objectReference: {fileID: 0}
+    - target: {fileID: 5841609017145248275, guid: 06ef3e4be72ec284e968fba96f5abe80, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8071250771365223232, guid: 06ef3e4be72ec284e968fba96f5abe80, type: 3}
       propertyPath: _hudView
       value: 

@@ -109,3 +109,5 @@ InitTestScene*.unity*
 # !/Vesper_Game/Blender/
 # !/Vesper_Game/Blender/Project3Game/
 # (Nếu Vesper_Game/ là thư mục gốc của git repo, bạn không cần thêm Vesper_Game/ vào)
+/V35P3R_Game/obj
+/V35P3R_Game/.idea
